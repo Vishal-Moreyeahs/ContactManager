@@ -8,9 +8,39 @@
             margin-top: 50px;
             height: 600px;
         }
+
+        .custom-btn {
+            background-color: #ffcc00; /* Custom background color */
+            border-color: #ffcc00; /* Custom border color */
+            color: #fff; /* Text color */
+            padding: 10px 20px; /* Padding inside button */
+            border-radius: 8px; /* Rounded corners */
+            font-family: 'Poppins', sans-serif; /* Custom font */
+            font-size: 16px; /* Font size */
+            text-transform: uppercase; /* Uppercase text */
+            font-weight: bold; /* Bold text */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+        }
+
+            .custom-btn:hover {
+                background-color: #e6b800; /* Hover background color */
+                border-color: #e6b800; /* Hover border color */
+                transform: translateY(-2px); /* Slight lift effect */
+            }
+
+        .center {
+            display: flex;
+            justify-content: center; /* Center the button horizontally */
+            margin-top: 20px; /* Margin above the button */
+        }
     </style>
 </head>
 <body>
+    <div class="center">
+        <a asp-action="Index" class="btn btn-warning w-20 custom-btn">Back to List</a>
+    </div>
+
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
