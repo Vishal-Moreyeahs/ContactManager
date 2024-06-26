@@ -1,17 +1,22 @@
 ﻿using ContactManager.Interface;
 using ContactManager.Models;
+using ContactManager.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
+using System.Net;
 
 namespace ContactManager.Controllers
 {
     public class ContactController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly GeocodingService _geocodingService;
 
-        public ContactController(IUnitOfWork unitOfWork)
-        { 
+        public ContactController(IUnitOfWork unitOfWork, GeocodingService geocodingService)
+        {
             _unitOfWork = unitOfWork;
+            _geocodingService = geocodingService;
         }
 
         public async Task<IActionResult> Index()
@@ -19,6 +24,7 @@ namespace ContactManager.Controllers
             var contacts = await _unitOfWork.GetRepository<Contact>().GetAll();
             return View(contacts);
         }
+
 
 
         [HttpGet]
@@ -37,7 +43,21 @@ namespace ContactManager.Controllers
             return View();
         }
 
-       
+        public async Task<IActionResult> Location(string address)
+        {
+            if (string.IsNullOrEmpty(address))
+            {
+                address = "New York, USA"; // Default address
+            }
+            var (latitude, longitude) = await _geocodingService.GetCoordinatesAsync(address);
+
+            ViewBag.Latitude = latitude;
+            ViewBag.Longitude = longitude;
+            ViewBag.Address = address;
+
+            return View();
+        }
+
         public async Task<IActionResult> AddOrEdit(int id = 0)
         {
             if (id == 0)
@@ -47,9 +67,9 @@ namespace ContactManager.Controllers
         }
 
        
-        [HttpPost]
+        [HttpPost]  
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit([Bind("Id,Name,Email,Phone,Address,CreatedOn,UpdatedOn")] Contact contact)
+        public async Task<IActionResult> AddOrEdit(Contact contact)
         {
             
                 if (contact.Id == 0)
@@ -58,6 +78,7 @@ namespace ContactManager.Controllers
                 }
                 else
                 { 
+                    contact.UpdatedOn = DateTime.Now;
                     var contactUpdate = await _unitOfWork.GetRepository<Contact>().Upsert(contact);
                 }
                 await _unitOfWork.Save();

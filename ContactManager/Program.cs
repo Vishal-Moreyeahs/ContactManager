@@ -13,6 +13,8 @@ builder.Services.AddDbContext<ContactManagerContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHttpClient<GeocodingService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

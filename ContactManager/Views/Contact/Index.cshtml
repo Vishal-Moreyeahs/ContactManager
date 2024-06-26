@@ -94,6 +94,7 @@
                         <th>Contact Number</th>
                         <th>Email</th>
                         <th>Address</th>
+                        <th>Location</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,6 +106,14 @@
                             <td>@Html.DisplayFor(modelItem => contact.Phone)</td>
                             <td>@Html.DisplayFor(modelItem => contact.Email)</td>
                             <td>@Html.DisplayFor(modelItem => contact.Address)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(contact.Address))
+                                {
+                                    <a href="javascript:void(0);" class="show-map" data-address="@contact.Address">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </a>
+                                }
+                            </td>
                         </tr>
                         serialNumber++; // Increment serial number after each row
                     }
@@ -136,6 +145,13 @@
                 var id = $(this).data('id');
                 var editUrl = '@Url.Action("AddOrEdit", "Contact", new { id = "__id__" })'.replace('__id__', id);
                 window.location.href = editUrl;
+            });
+
+            // Show map functionality
+            $('.show-map').click(function () {
+                var address = $(this).data('address');
+                var locationUrl = '@Url.Action("Location", "Contact", new { address = "__address__" })'.replace('__address__', encodeURIComponent(address));
+                window.location.href = locationUrl;
             });
         });
     </script>
