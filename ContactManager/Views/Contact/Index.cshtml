@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Contact>
+
+@{
+    ViewData["Title"] = "Contacts";
+    int serialNumber = 1; // Initialize serial number counter
+}
+
+<style>
+    .gridview {
+        height: 53vh;
+        width: 110%;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow-y: auto;
+        font-family: poppins;
+    }
+    /* Custom styles for the search form */
+    #searchForm {
+        display: flex;
+        align-items: center;
+    }
+
+    .content {
+        font-family: poppins;
+        color:#fff;
+    }
+
+    #searchInput {
+        flex: 1; /* Take remaining space */
+        margin-right: 10px; /* Space between input and button */
+        padding: 8px 12px; /* Padding inside input */
+        border: 1px solid #ccc; /* Border style */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Font size */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* Button background color */
+        border-color: #007bff; /* Button border color */
+        color: #fff; /* Button text color */
+        padding: 8px 12px; /* Padding inside button */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Font size */
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* Hover background color */
+            border-color: #0056b3; /* Hover border color */
+            color: #fff; /* Hover text color */
+        }
+
+    .btnContact {
+        font-size: 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        padding: 5px 10px;
+        background-color: #a3c9ff;
+        border-color: #a3c9ff;
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex mt-5 justify-content-center">
+            <h2 class="mb-5 content">All Contact Details</h2>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm mt-1">
+                    <a asp-action="AddOrEdit" class="btn btnContact">
+                        Create Contact
+                    </a>
+                </div>
+                <div class="col-sm mb-2">                    
+                    <form id="searchForm" class="form-inline mt-3">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="searchInput" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="gridview mb-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>S. No.</th>
+                        <th>Name</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contact in Model)
+                    {
+                        <tr class="contact-row" data-id="@contact.Id">
+                            <td>@serialNumber</td>
+                            <td>@Html.DisplayFor(modelItem => contact.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => contact.Phone)</td>
+                            <td>@Html.DisplayFor(modelItem => contact.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => contact.Address)</td>
+                        </tr>
+                        serialNumber++; // Increment serial number after each row
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Search functionality
+            $('#searchForm').submit(function (e) {
+                e.preventDefault();
+                var searchText = $('#searchInput').val().toLowerCase();
+                $('.contact-row').each(function () {
+                    var textToSearch = $(this).text().toLowerCase();
+                    if (textToSearch.indexOf(searchText) === -1) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+            });
+
+            // Double click to edit functionality
+            $('.contact-row').dblclick(function () {
+                var id = $(this).data('id');
+                var editUrl = '@Url.Action("AddOrEdit", "Contact", new { id = "__id__" })'.replace('__id__', id);
+                window.location.href = editUrl;
+            });
+        });
+    </script>
+}

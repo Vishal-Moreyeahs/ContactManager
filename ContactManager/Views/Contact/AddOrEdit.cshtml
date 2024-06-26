@@ -1,0 +1,105 @@
+﻿@model Contact
+
+@{
+    ViewData["Title"] = "Transaction";
+}
+<style>
+    .gridview {
+        height: 53vh;
+        width: 100%;
+        margin-top: 160px;
+        background-color: #fff;
+        border-radius: 10px solid black;
+        font-family: poppins;       
+    }
+
+    .btnContact {
+        font-size: 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        padding: 5px 10px 5px 10px;
+        background-color: #a3c9ff;
+        border-color: #a3c9ff;
+        font-family: poppins;
+    }
+
+    .btn-danger {
+        width: 100%;
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .contact{
+        text-align:center;
+
+    }
+</style>
+
+
+<div class="row gridview">
+    <div class="col-md-6 offset-md-3">
+        <h1 class="contact mt-2">Contact</h1>
+        <form asp-action="AddOrEdit" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedOn" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Enter Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" placeholder="Enter Phone" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label "></label>
+                <input asp-for="Address" class="form-control" placeholder="Enter Address" />
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="submit" value="@(Model.Id == 0 ? "Add" : "Edit")" class="btn btn-primary w-100" />
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    @if (Model.Id != 0)
+                    {
+                            <button type="button" class="btn btn-danger btn-md"
+                                    onclick="confirmDelete('@Model.Id')">
+                                Delete
+                            </button>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(id) {
+        if (confirm('Are you sure to delete this record?')) {
+            // Set the form action dynamically and submit
+            document.querySelector('form').action = '/Contact/DeleteConfirmed/' + id;
+            document.querySelector('form').submit();
+        }
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

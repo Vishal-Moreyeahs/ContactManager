@@ -1,4 +1,7 @@
 using ContactManager;
+using ContactManager.Interface;
+using ContactManager.Service;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +11,8 @@ builder.Services.AddDbContext<ContactManagerContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"))
             );
 
-
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -26,10 +30,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// seeding the data 
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<ContactManagerContext>();
+//    dbContext.Database.Migrate();
+//}
+
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Contact}/{action=Index}/{id?}");
 
 app.Run();

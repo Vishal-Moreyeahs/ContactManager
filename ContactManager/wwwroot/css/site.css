@@ -17,6 +17,28 @@ html {
   min-height: 100%;
 }
 
+.header {
+    background-color:black;
+    height: 7vh;
+}
+.logo {
+    height: 50px;
+    filter: invert(1);
+    position: absolute;
+}
+
+.gridview {
+    height: 53vh;
+    width: 100%;
+    /* background-color: #fff; */
+    border-radius: 10px solid black;
+    font-family: poppins;
+}
+
 body {
-  margin-bottom: 60px;
+    background-image: url('../Image/contact 1.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    background-repeat: no-repeat;
 }
