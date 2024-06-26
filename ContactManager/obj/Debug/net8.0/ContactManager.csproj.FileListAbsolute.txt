@@ -134,3 +134,5 @@ C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\obj\Debug\ne
 C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\obj\Debug\net8.0\ContactManager.pdb
 C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\obj\Debug\net8.0\ContactManager.genruntimeconfig.cache
 C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\obj\Debug\net8.0\ref\ContactManager.dll
+C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\obj\Debug\net8.0\ContactManager.sourcelink.json
+C:\Users\user\Desktop\Contact Manager\ContactManager\ContactManager\bin\Debug\net8.0\Newtonsoft.Json.dll

@@ -18,6 +18,11 @@ namespace ContactManager.Models
         [Phone]
         public string Phone { get; set; }
 
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
+
+        public DateTime UpdatedOn { get; set; } = DateTime.Now;
+
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        //public bool IsDeleted { get; set; }
     }
 }
