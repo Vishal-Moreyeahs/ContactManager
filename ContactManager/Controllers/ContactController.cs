@@ -21,8 +21,16 @@ namespace ContactManager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var contacts = await _unitOfWork.GetRepository<Contact>().GetAll();
-            return View(contacts);
+            try
+            {
+                var contacts = await _unitOfWork.GetRepository<Contact>().GetAll();
+                return View(contacts);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+            }
         }
 
 
@@ -36,62 +44,113 @@ namespace ContactManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Contact contact)
         {
-            var contactAdd = await _unitOfWork.GetRepository<Contact>().Add(contact);
-            await _unitOfWork.Save();
-            if(contactAdd)
-                return RedirectToAction("Index");
-            return View();
+            try
+            {
+                var contactAdd = await _unitOfWork.GetRepository<Contact>().Add(contact);
+                await _unitOfWork.Save();
+                if(contactAdd)
+                    return RedirectToAction("Index");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+            }
         }
 
         public async Task<IActionResult> Location(string address)
         {
-            if (string.IsNullOrEmpty(address))
+            try
             {
-                address = "New York, USA"; // Default address
+                if (string.IsNullOrEmpty(address))
+                {
+                    address = "New York, USA"; // Default address
+                }
+                var (latitude, longitude) = await _geocodingService.GetCoordinatesAsync(address);
+
+                ViewBag.Latitude = latitude;
+                ViewBag.Longitude = longitude;
+                ViewBag.Address = address;
+
+                return View();
             }
-            var (latitude, longitude) = await _geocodingService.GetCoordinatesAsync(address);
-
-            ViewBag.Latitude = latitude;
-            ViewBag.Longitude = longitude;
-            ViewBag.Address = address;
-
-            return View();
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+            }
+            
         }
 
         public async Task<IActionResult> AddOrEdit(int id = 0)
         {
-            if (id == 0)
-                return View(new Contact());
-            else
-                return View(await _unitOfWork.GetRepository<Contact>().GetById(id));
+            try
+            {
+                if (id == 0)
+                    return View(new Contact());
+                else
+                    return View(await _unitOfWork.GetRepository<Contact>().GetById(id));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+            }
         }
 
-       
-        [HttpPost]  
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEdit(Contact contact)
         {
-            
+            try
+            {
                 if (contact.Id == 0)
                 {
                     var contactAdd = await _unitOfWork.GetRepository<Contact>().Add(contact);
                 }
                 else
-                { 
+                {
                     contact.UpdatedOn = DateTime.Now;
                     var contactUpdate = await _unitOfWork.GetRepository<Contact>().Upsert(contact);
                 }
                 await _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
+                
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as per your application's logging strategy
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+
+                // You might log ex.Message or handle it differently based on your logging strategy
+            }
+
+        }
+
+        public IActionResult Error(string exceptionMessage)
+        {
+            ViewData["ExceptionMessage"] = exceptionMessage;
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _unitOfWork.GetRepository<Contact>().Delete(id);
-            await _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _unitOfWork.GetRepository<Contact>().Delete(id);
+                await _unitOfWork.Save();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Contact", new { exceptionMessage = ex.Message });
+            }
         }
     }
 }
